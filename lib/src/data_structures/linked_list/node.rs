@@ -1,14 +1,21 @@
 #[derive(Debug)]
 pub struct Node<T: Copy> {
     pub value: T,
-    pub next: Box<Option<Node<T>>>
+    pub next: Option<Box<Node<T>>>
 }
 
 impl<T: Copy> Node<T> {
     pub fn new(value: T, next: Option<Node<T>>) -> Self {
-        Node {
-            value: value,
-            next: Box::new(next)
+        if next.is_none() {
+            Node {
+                value: value,
+                next: None
+            }
+        } else {
+            Node {
+                value: value,
+                next: Some(Box::new(next.unwrap()))
+            }
         }
     }
 }

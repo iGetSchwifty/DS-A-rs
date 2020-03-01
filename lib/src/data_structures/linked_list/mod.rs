@@ -5,10 +5,10 @@ use node::*;
 #[derive(Debug)]
 pub struct LinkedList<T: Copy> {
     head: Option<Node<T>>,
-    tail: Option<Node<T>> // Consider making this a ref and having ownership be from the node...
+    tail: Option<*mut Node<T>> // Consider making this a ref and having ownership be from the node...
 }
 
-impl<T: Copy> LinkedList<T> {
+impl<T> LinkedList<T> where T: Copy {
     pub fn new() -> Self {
         LinkedList {
             head: None,
@@ -21,20 +21,29 @@ impl<T: Copy> LinkedList<T> {
     }
 
     pub fn push(&mut self, value: T) {
-        self.head = Some(Node::new(value, self.head.clone()));
+        if self.head.is_none() {
+            self.head = Some(Node::new(value, None));
+        } else {
+            let old_head = self.head.clone().unwrap();
+            self.head = Some(Node {
+                value: value,
+                next: Some(Box::new(old_head))
+            });
+        }
         if self.tail.is_none() {
-            self.tail = self.head.clone();
+            self.tail = Some(self.head.as_mut().unwrap());
         }
     }
 
     pub fn append(&mut self, value: T) {
+        let mut new_tail = Box::new(Node::new(value, None));
+        let raw_tail: *mut _ = &mut *new_tail;
+
         if self.empty() {
             self.push(value);
         } else {
-            if let Some(tail) = &mut self.tail {
-                tail.next = Box::new(Some(Node::new(value, None)));
-                self.tail = *tail.next.clone();
-            }
+            unsafe { (*self.tail.unwrap()).next = Some(new_tail) };
         }
+        self.tail = Some(raw_tail);
     }
 }
