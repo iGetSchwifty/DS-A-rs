@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct Node<T: Copy> {
     pub value: T,
     pub next: Box<Option<Node<T>>>

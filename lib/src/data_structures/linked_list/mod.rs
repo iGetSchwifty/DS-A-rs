@@ -2,6 +2,7 @@ pub mod node;
 
 use node::*;
 
+#[derive(Debug)]
 pub struct LinkedList<T: Copy> {
     head: Option<Node<T>>,
     tail: Option<Node<T>>
@@ -16,7 +17,7 @@ impl<T: Copy> LinkedList<T> {
     }
 
     pub fn empty(&self) -> bool {
-        self.tail.is_none()
+        self.head.is_none()
     }
 
     pub fn push(&mut self, value: T) {
@@ -36,6 +37,4 @@ impl<T: Copy> LinkedList<T> {
             }
         }
     }
-
-    // TODO: Need to do insert after
 }
