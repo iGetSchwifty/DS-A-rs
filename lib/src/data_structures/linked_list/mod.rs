@@ -1,11 +1,11 @@
 pub mod node;
 
 use node::*;
-// Turns out LL in rust is harder than it needs to be. Skip and come back to so I can keep reading...
+
 #[derive(Debug)]
 pub struct LinkedList<T: Copy> {
     head: Option<Node<T>>,
-    tail: Option<*mut Node<T>> // Consider making this a ref and having ownership be from the node...
+    tail: Option<*mut Node<T>>
 }
 
 impl<T> LinkedList<T> where T: Copy {
