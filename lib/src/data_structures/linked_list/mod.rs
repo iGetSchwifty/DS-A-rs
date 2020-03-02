@@ -25,7 +25,7 @@ impl<T> LinkedList<T> where T: Copy {
         if self.head.is_none() {
             self.head = Some(Node::new(value, None));
         } else {
-            let old_head = self.head.clone().unwrap();
+            let old_head = self.head.take().unwrap();
             self.head = Some(Node::new(value, Some(old_head)));
         }
         if self.tail.is_none() {
@@ -44,5 +44,17 @@ impl<T> LinkedList<T> where T: Copy {
             unsafe { (*self.tail.unwrap()).next = Some(new_tail) };
         }
         self.tail = Some(raw_tail);
+    }
+}
+
+impl<T> Drop for LinkedList<T> where T: Copy {
+    fn drop(&mut self) {
+        let mut node = self.head.take();
+        while let Some(mut next_node) = node.take() {
+            let optional_next = next_node.next.take();
+            if optional_next.is_some() {
+                node = Some(*optional_next.unwrap());
+            }
+        }
     }
 }
