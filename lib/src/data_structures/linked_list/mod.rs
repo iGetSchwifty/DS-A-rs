@@ -20,21 +20,20 @@ impl<T> LinkedList<T> where T: Copy {
         self.head.is_none()
     }
 
+    // O(1)
     pub fn push(&mut self, value: T) {
         if self.head.is_none() {
             self.head = Some(Node::new(value, None));
         } else {
             let old_head = self.head.clone().unwrap();
-            self.head = Some(Node {
-                value: value,
-                next: Some(Box::new(old_head))
-            });
+            self.head = Some(Node::new(value, Some(old_head)));
         }
         if self.tail.is_none() {
             self.tail = Some(self.head.as_mut().unwrap());
         }
     }
 
+    // O(1)
     pub fn append(&mut self, value: T) {
         let mut new_tail = Box::new(Node::new(value, None));
         let raw_tail: *mut _ = &mut *new_tail;
